@@ -32,13 +32,14 @@ export const signup = async (req, res) => {
     });
 
     await newUser.save();
-
-    generateTokenAndSetCookie(newUser._id, res);
-
+    const payload = { userId: newUser._id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
     res.status(201).json({
       _id: newUser._id,
       name: newUser.name,
+      avatar: newUser.avatar,
       email: newUser.email,
+      token,
     });
   } catch (error) {
     console.error("Error in signup controller: ", error.message);
